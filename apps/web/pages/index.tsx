@@ -9,7 +9,6 @@ export default function IndexPage() {
       width={750}
       height={111.375}
     />
-
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default defineConfig({
             contracts: [
                 {
                     name: "Poavey",
-                    address: process.env.POAVEY_CONTRACT_ADDRESS! as `0x${string}`
+                    address: process.env.NEXT_PUBLIC_POAVEY_CONTRACT_ADDRESS! as `0x${string}`
                 }
             ]
         }),

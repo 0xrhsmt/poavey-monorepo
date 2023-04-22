@@ -18,6 +18,7 @@ module.exports = {
       emerald: colors.emerald,
       indigo: colors.indigo,
       yellow: colors.yellow,
+      red: colors.red,
       primary: '#BB84E8',
       secondary: '#471AA0',
       accent: '#471AA0',

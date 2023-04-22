@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 import { ethers, BigNumber } from "ethers";
 import { useForm } from "react-hook-form";
 import {
@@ -15,24 +15,25 @@ export default function EventsNewPage() {
     register,
     handleSubmit,
     watch,
-    reset,
+    reset: resetForm,
   } = useForm();
 
-  const _eventId = watch("eventId");
+  const rawEventId = watch("eventId");
+  const invalidEventId = useMemo(() => (!!rawEventId && isNaN(rawEventId)), [rawEventId])
   const { eventId, groupId } = useMemo(
     () =>
-      _eventId && _eventId > 0
+      rawEventId && rawEventId > 0
         ? {
-            eventId: BigNumber.from(_eventId),
+            eventId: BigNumber.from(rawEventId),
             groupId: ethers.BigNumber.from(ethers.utils.randomBytes(32)),
           }
         : { eventId: undefined, groupId: undefined },
-    [_eventId]
+    [rawEventId]
   );
 
   const { config, isLoading: isLoadingPrepareRegister } =
     usePreparePoaveyRegisterEvent({
-      enabled: !!eventId,
+      enabled: !!eventId && !!groupId,
       args: [eventId, groupId],
     });
   const { isLoading: isLoadingRegister, writeAsync: registerEvent } =
@@ -48,16 +49,16 @@ export default function EventsNewPage() {
 
       const id = receipt.logs[2].topics[1];
 
+      resetForm();
       push(`/events/${id}`);
-      reset();
     } catch (error) {
       console.error(error);
     }
-  }, [eventId, groupId, registerEvent, reset]);
+  }, [eventId, groupId, registerEvent, resetForm]);
 
   const isSubmitEnabled = useMemo(
-    () => !isLoadingRegister && !isValidating && isValid && registerEvent,
-    [isValid, isValidating, isLoadingRegister, registerEvent]
+    () => !isLoadingPrepareRegister && !isLoadingRegister && !invalidEventId,
+    [isLoadingPrepareRegister, isLoadingRegister, invalidEventId]
   );
 
   return (
@@ -69,14 +70,14 @@ export default function EventsNewPage() {
               Plug-in survey function to POAPs
             </h1>
             <p className="mt-2 text-sm text-gray-600">
-               you can issue POAPs&nbsp;
+              you can issue POAPs&nbsp;
               <a
                 className="text-primary decoration-2 hover:underline font-medium"
                 href="https://drops.poap.xyz/"
                 target="_blank"
               >
                 here
-                <ArrowTopRightOnSquareIcon className="inline w-4 h-4 mb-0.5 ml-0.5"/>
+                <ArrowTopRightOnSquareIcon className="inline w-4 h-4 mb-0.5 ml-0.5" />
               </a>
             </p>
           </div>
@@ -85,8 +86,11 @@ export default function EventsNewPage() {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid gap-y-4">
                 <div>
-                  <label htmlFor="eventId" className="cursor-pointer block text-sm mb-2">
-                    POAP Event Id
+                  <label
+                    htmlFor="eventId"
+                    className="cursor-pointer block text-sm mb-2"
+                  >
+                    POAP Event Id（number）
                   </label>
                   <div className="relative">
                     <input
@@ -97,16 +101,19 @@ export default function EventsNewPage() {
                         required: true,
                         valueAsNumber: true,
                         min: 1,
+                        
                       })}
                     />
-                    {formErrors.eventId && <span>This field is required</span>}
+                    {formErrors?.eventId?.type === 'required' && <span className="text-red-400">This field is required</span>}
+                    {formErrors?.eventId?.type === 'min' && <span className="text-red-400">This field is greater than 0</span>}
+                    {invalidEventId && <span className="text-red-400">This field is number</span>}
                   </div>
                 </div>
 
                 <button
                   type="submit"
                   disabled={!isSubmitEnabled}
-                  className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
+                  className="cursor-pointer disabled:cursor-not-allowed w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm disabled:opacity-40"
                 >
                   {isLoadingPrepareRegister ? "Loading..." : "Plug In"}
                 </button>

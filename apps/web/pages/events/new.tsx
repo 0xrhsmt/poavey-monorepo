@@ -70,7 +70,7 @@ export default function EventsNewPage() {
               Plug-in survey function to POAP
             </h1>
             <p className="mt-2 text-sm text-gray-600">
-              you can issue POAP&nbsp;
+              you can issue POAP{' '}
               <a
                 className="text-primary decoration-2 hover:underline font-medium"
                 href="https://drops.poap.xyz/"

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRightIcon } from '@heroicons/react/24/solid'
 
-
 export default function IndexPage() {
   return (
     <div className="flex flex-col m-auto justify-center items-center w-full h-full">

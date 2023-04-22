@@ -3,7 +3,8 @@
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["NEXT_PUBLIC_ALCHEMY_ID", "ETHERSCAN_API_KEY", "POAVEY_CONTRACT_ADDRESS"]
     },
     "lint": {},
     "dev": {

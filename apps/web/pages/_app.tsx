@@ -2,7 +2,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import '../globals.css'
 
 import type { AppProps } from "next/app";
-import React from "react";
+import React, { useEffect } from "react";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrumGoerli } from "wagmi/chains";
@@ -37,6 +37,11 @@ const appInfo = {
 };
 
 export default function App({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    import('preline')
+  }, [])
+
+
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider appInfo={appInfo} chains={chains}>

@@ -162,8 +162,8 @@ export default function IndexPage() {
       <div className="w-[50rem]">
         <div className="w-full px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
           <div className="grid grid-cols-1 gap-6">
-            <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-              <div className="h-[200px] flex flex-col justify-center items-center m-4 bg-[#f5f4ff] rounded-2xl">
+            <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
+              <div className="h-[200px] flex flex-col justify-center items-center m-4 bg-[#f5f4ff]">
                 <Image
                   src="/ethtaipei.png"
                   alt="ethtaipei"
@@ -176,7 +176,7 @@ export default function IndexPage() {
                   ID 12345678
                 </span>
                 <h3 className="text-xl mb-1 font-semibold text-secondary">
-                  EthTaipei Demo POAPs
+                  EthTaipei Demo POAP
                 </h3>
                 <h5 className="flex items-center justify-start text-xs text-secondary">
                   <CalendarDaysIcon className="inline-block h-4 w-4 mr-1" /> Apr
@@ -198,7 +198,7 @@ export default function IndexPage() {
           <button
             type="button"
             onClick={attendEvent}
-            className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
+            className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
           >
             Mint POAP
           </button>
@@ -209,7 +209,7 @@ export default function IndexPage() {
           <button
             type="button"
             onClick={answerSurvey}
-            className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
+            className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
           >
             Feedback Submit
           </button>

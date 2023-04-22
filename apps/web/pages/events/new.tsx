@@ -63,14 +63,14 @@ export default function EventsNewPage() {
 
   return (
     <div className="flex flex-col items-center w-full pt-8">
-      <div className="bg-white border max-w-md border-gray-200 rounded-xl shadow-sm">
+      <div className="bg-white border max-w-md border-gray-200 shadow-sm">
         <div className="p-4 sm:p-7">
           <div className="text-center">
             <h1 className="block text-2xl font-bold text-gray-800">
-              Plug-in survey function to POAPs
+              Plug-in survey function to POAP
             </h1>
             <p className="mt-2 text-sm text-gray-600">
-              you can issue POAPs&nbsp;
+              you can issue POAP&nbsp;
               <a
                 className="text-primary decoration-2 hover:underline font-medium"
                 href="https://drops.poap.xyz/"
@@ -95,7 +95,7 @@ export default function EventsNewPage() {
                   <div className="relative">
                     <input
                       id="eventId"
-                      className="py-3 px-4 block w-full border border-gray-300 rounded-md text-sm focus:border-primary focus:ring-primary"
+                      className="py-3 px-4 block w-full border border-gray-300 text-sm focus:border-primary focus:ring-primary"
                       disabled={isLoadingRegister}
                       {...register("eventId", {
                         required: true,
@@ -113,7 +113,7 @@ export default function EventsNewPage() {
                 <button
                   type="submit"
                   disabled={!isSubmitEnabled}
-                  className="cursor-pointer disabled:cursor-not-allowed w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm disabled:opacity-40"
+                  className="cursor-pointer disabled:cursor-not-allowed w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm disabled:opacity-40"
                 >
                   {isLoadingPrepareRegister ? "Loading..." : "Plug In"}
                 </button>

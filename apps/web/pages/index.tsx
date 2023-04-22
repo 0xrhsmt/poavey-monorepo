@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
-import { useAccount, useDisconnect, createClient } from "wagmi";
-import { usePoaveyEvents } from "../libs"
-import { BigNumber } from "ethers";
+import Image from 'next/image'
 
 export default function IndexPage() {
   return (
     <div>
-      Top Page
+      <Image
+      src="/logo.png"
+      alt="Picture of the author"
+      width={750}
+      height={111.375}
+    />
+
     </div>
   );
 }

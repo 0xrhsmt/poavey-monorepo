@@ -4,6 +4,7 @@ import {
   usePoaveyGetCommitments,
   usePoaveyGetSurveyOptions,
   usePoaveySurveyAnsweredEvent,
+  usePoaveyIsAttendee,
   usePoaveyGetAnswers
 } from "../../../libs";
 import { BigNumber, ethers } from "ethers";
@@ -156,12 +157,16 @@ export default function IndexPage() {
   const { query } = useRouter();
   const { id } = query;
   const { mounted } = useMounted();
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const walletConnected = mounted && isConnected;
 
   const { identity, requestIdentity } = useIdentity(id as string);
   const { attendEvent } = useAttendEvent(id as string, requestIdentity);
   const { answerSurvey } = useAnswerSurvey(id as string, identity);
+  const { data: isAttendee } = usePoaveyIsAttendee({
+    enabled: !!id && !!walletConnected,
+    args: [BigNumber.from(id ?? 0), address],
+  })
   const { data: surveyOptions } = usePoaveyGetSurveyOptions({
     enabled: !!id,
     args: [BigNumber.from(id ?? 0)],
@@ -199,6 +204,7 @@ export default function IndexPage() {
     return result
   }, [answers])
 
+  console.log(isAttendee)
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -240,11 +246,11 @@ export default function IndexPage() {
           </h3>
           <button
             type="button"
-            disabled={!walletConnected}
+            disabled={!walletConnected || isAttendee}
             onClick={attendEvent}
-            className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
+            className="cursor-pointer disabled:cursor-not-allowed w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm disabled:opacity-40"
           >
-            {walletConnected ? "Mint POAP" : "Need to connect wallet"}
+            {isAttendee ? 'Mint DONE' : walletConnected ? "Mint POAP" : "Need to connect wallet"}
           </button>
 
           <h3 className="text-xl mt-14 mb-4 font-semibold text-secondary">
@@ -265,6 +271,7 @@ export default function IndexPage() {
                 <div className="relative">
                   <select
                     id="question1"
+                    disabled={!walletConnected || !isAttendee}
                     {...register("question1")}
                     className="py-3 px-4 pr-9 block w-full border-gray-200 border-2 text-sm focus:border-primary focus:ring-primary"
                   >
@@ -290,6 +297,7 @@ export default function IndexPage() {
                 <div className="relative">
                   <select
                     id="question2"
+                    disabled={!walletConnected || !isAttendee}
                     {...register("question2")}
                     className="py-3 px-4 pr-9 block w-full border-gray-200 border-2 text-sm focus:border-primary focus:ring-primary"
                   >
@@ -316,6 +324,7 @@ export default function IndexPage() {
                 <div className="relative">
                   <select
                     id="question3"
+                    disabled={!walletConnected || !isAttendee}
                     {...register("question3")}
                     className="py-3 px-4 pr-9 block w-full border-gray-200 border-2 text-sm focus:border-primary focus:ring-primary"
                   >
@@ -335,10 +344,10 @@ export default function IndexPage() {
 
               <button
                 type="submit"
-                disabled={!walletConnected}
-                className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
+                disabled={!walletConnected || !isAttendee}
+                className="cursor-pointer disabled:cursor-not-allowed w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm disabled:opacity-40"
               >
-                {walletConnected ? "Feedback Submit" : "Need to connect wallet"}
+                {walletConnected ? (!isAttendee ? 'First, you need to mint POAP' : "Feedback Submit") : "Need to connect wallet"}
               </button>
             </div>
           </form>

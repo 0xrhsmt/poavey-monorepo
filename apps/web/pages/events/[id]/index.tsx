@@ -166,6 +166,7 @@ export default function IndexPage() {
   const { data: isAttendee } = usePoaveyIsAttendee({
     enabled: !!id && !!walletConnected,
     args: [BigNumber.from(id ?? 0), address],
+    watch: true
   })
   const { data: surveyOptions } = usePoaveyGetSurveyOptions({
     enabled: !!id,

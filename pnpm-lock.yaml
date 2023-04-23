@@ -98,6 +98,9 @@ importers:
       '@semaphore-protocol/contracts':
         specifier: ^3.7.0
         version: 3.7.0
+      ethers:
+        specifier: ^5.7.2
+        version: 5.7.2
     devDependencies:
       '@nomicfoundation/hardhat-toolbox':
         specifier: ^2.0.2

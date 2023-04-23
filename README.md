@@ -5,6 +5,15 @@
   * While delivering POAPs, participants can response the survey
   * Survey responses are completely anonymous by zkp-library-Semaphore.
 
+
+## Live demo
+
+https://poavey-monorepo-fzwai7kvp-0xrhsmt.vercel.app/
+
+## Slides
+
+https://docs.google.com/presentation/d/1RnM6cqsOxhxqObuaUx6vpnFth9hP32jNC1gA3azeW2s/edit#slide=id.ge28d6c1bc8_0_42
+
 ## Install and run
 
 ```sh

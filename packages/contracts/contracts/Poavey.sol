@@ -13,6 +13,7 @@ contract Poavey {
         uint256 eventId;
         mapping(address => bool) attendees;
         mapping(uint256 => bool) nullifierHashes;
+        string[] surveyOptions;
         // TODO: should be stored offchain.
         uint256[] commitments;
     }
@@ -37,7 +38,9 @@ contract Poavey {
         semaphore = ISemaphore(semaphoreAddress);
     }
 
-    function registerEvent(uint256 eventId, uint256 groupId) external {
+    function registerEvent(uint256 eventId, uint256 groupId, string[] calldata surveyOptions) external {
+        if (surveyOptions.length == 0) revert("Poavey: survey options cannot be empty");
+
         uint256 id = uint256(
             keccak256(abi.encodePacked(msg.sender, blockhash(block.number - 1)))
         );
@@ -47,6 +50,10 @@ contract Poavey {
         anEvent.id = id;
         anEvent.eventId = eventId;
         anEvent.groupId = groupId;
+
+        for(uint256 i = 0; i < surveyOptions.length; i++) {
+            anEvent.surveyOptions.push(surveyOptions[i]);
+        }
 
         semaphore.createGroup(groupId, 20, address(this));
 
@@ -114,5 +121,12 @@ contract Poavey {
         if (anEvent.id == 0) revert("Poavey: event does not exist");
         
         return anEvent.commitments;
+    }
+
+    function getSurveyOptions(uint256 id) external view returns (string[] memory) {
+        Event storage anEvent = events[id];
+        if (anEvent.id == 0) revert("Poavey: event does not exist");
+        
+        return anEvent.surveyOptions;
     }
 }

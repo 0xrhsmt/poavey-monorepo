@@ -7,8 +7,14 @@ import {
   usePreparePoaveyRegisterEvent,
 } from "../../libs";
 import { useRouter } from "next/router";
+import { useMounted } from '../../libs';
+import { useAccount } from 'wagmi'
 
 export default function EventsNewPage() {
+  const { mounted } = useMounted()
+  const { isConnected } = useAccount()
+  const walletConnected = mounted && isConnected
+
   const { push } = useRouter();
   const {
     formState: { isValidating, isValid, errors: formErrors },
@@ -18,8 +24,11 @@ export default function EventsNewPage() {
     reset: resetForm,
   } = useForm();
 
-  const rawEventId = watch("eventId");
-  const invalidEventId = useMemo(() => (!!rawEventId && isNaN(rawEventId)), [rawEventId])
+  const [rawEventId, question1, question2, question3] = watch(["eventId", "question1", "question2", "question3"]);
+  const invalidEventId = useMemo(
+    () => !!rawEventId && isNaN(rawEventId),
+    [rawEventId]
+  );
   const { eventId, groupId } = useMemo(
     () =>
       rawEventId && rawEventId > 0
@@ -34,7 +43,7 @@ export default function EventsNewPage() {
   const { config, isLoading: isLoadingPrepareRegister } =
     usePreparePoaveyRegisterEvent({
       enabled: !!eventId && !!groupId,
-      args: [eventId, groupId],
+      args: [eventId, groupId, [question1, question2, question3]],
     });
   const { isLoading: isLoadingRegister, writeAsync: registerEvent } =
     usePoaveyRegisterEvent(config);
@@ -70,7 +79,7 @@ export default function EventsNewPage() {
               Plug-in survey function to POAP
             </h1>
             <p className="mt-2 text-sm text-gray-600">
-              you can issue POAP{' '}
+              you can issue POAP{" "}
               <a
                 className="text-primary decoration-2 hover:underline font-medium"
                 href="https://drops.poap.xyz/"
@@ -101,21 +110,102 @@ export default function EventsNewPage() {
                         required: true,
                         valueAsNumber: true,
                         min: 1,
-                        
                       })}
                     />
-                    {formErrors?.eventId?.type === 'required' && <span className="text-red-400">This field is required</span>}
-                    {formErrors?.eventId?.type === 'min' && <span className="text-red-400">This field is greater than 0</span>}
-                    {invalidEventId && <span className="text-red-400">This field is number</span>}
+                    {formErrors?.eventId?.type === "required" && (
+                      <span className="text-red-400">
+                        This field is required
+                      </span>
+                    )}
+                    {formErrors?.eventId?.type === "min" && (
+                      <span className="text-red-400">
+                        This field is greater than 0
+                      </span>
+                    )}
+                    {invalidEventId && (
+                      <span className="text-red-400">This field is number</span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="eventId"
+                    className="cursor-pointer block text-sm mb-2"
+                  >
+                    Question 1.
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="question1"
+                      className="py-3 px-4 block w-full border border-gray-300 text-sm focus:border-primary focus:ring-primary"
+                      disabled={isLoadingRegister}
+                      {...register("question1", {
+                        required: true,
+                      })}
+                    />
+                    {formErrors?.question1?.type === "required" && (
+                      <span className="text-red-400">
+                        This field is required
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="eventId"
+                    className="cursor-pointer block text-sm mb-2"
+                  >
+                    Question 2.
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="question2"
+                      className="py-3 px-4 block w-full border border-gray-300 text-sm focus:border-primary focus:ring-primary"
+                      disabled={isLoadingRegister}
+                      {...register("question2", {
+                        required: true,
+                      })}
+                    />
+                    {formErrors?.question2?.type === "required" && (
+                      <span className="text-red-400">
+                        This field is required
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="eventId"
+                    className="cursor-pointer block text-sm mb-2"
+                  >
+                    Question 3.
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="question3"
+                      className="py-3 px-4 block w-full border border-gray-300 text-sm focus:border-primary focus:ring-primary"
+                      disabled={isLoadingRegister}
+                      {...register("question3", {
+                        required: true,
+                      })}
+                    />
+                    {formErrors?.question3?.type === "required" && (
+                      <span className="text-red-400">
+                        This field is required
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  disabled={!isSubmitEnabled}
+                  disabled={!isSubmitEnabled || !walletConnected}
                   className="cursor-pointer disabled:cursor-not-allowed w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm disabled:opacity-40"
                 >
-                  {isLoadingPrepareRegister ? "Loading..." : "Plug In"}
+                  {walletConnected ? isLoadingPrepareRegister ? "Loading..." : "Plug In" : 'Need to connect wallet'}
                 </button>
               </div>
             </form>

@@ -14,6 +14,7 @@ import { generateProof, FullProof } from "@semaphore-protocol/proof";
 import Image from "next/image";
 import { CalendarDaysIcon } from "@heroicons/react/24/solid";
 import { Poavey__factory } from "contracts";
+import { useMounted } from "../../../libs";
 
 const identityLocalStorageKey = (address: string, id: string) =>
   `identity-${address}-${id}`;
@@ -113,7 +114,7 @@ const useAnswerSurvey = (id?: string, identity?: Identity) => {
   const { data: commitments } = usePoaveyGetCommitments({
     enabled: !!id,
     args: [BigNumber.from(id ?? 0)],
-    watch: true
+    watch: true,
   });
 
   const answerSurvey = useCallback(async () => {
@@ -152,6 +153,9 @@ const useAnswerSurvey = (id?: string, identity?: Identity) => {
 export default function IndexPage() {
   const { query } = useRouter();
   const { id } = query;
+  const { mounted } = useMounted();
+  const { isConnected } = useAccount();
+  const walletConnected = mounted && isConnected;
 
   const { identity, requestIdentity } = useIdentity(id as string);
   const { attendEvent } = useAttendEvent(id as string, requestIdentity);
@@ -197,10 +201,11 @@ export default function IndexPage() {
           </h3>
           <button
             type="button"
+            disabled={!walletConnected}
             onClick={attendEvent}
             className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
           >
-            Mint POAP
+            {walletConnected ? "Mint POAP" : "Need to connect wallet"}
           </button>
 
           <h3 className="text-xl mt-14 mb-4 font-semibold text-secondary">
@@ -208,17 +213,17 @@ export default function IndexPage() {
           </h3>
           <button
             type="button"
+            disabled={!walletConnected}
             onClick={answerSurvey}
             className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
           >
-            Feedback Submit
+            {walletConnected ? "Feedback Submit" : "Need to connect wallet"}
           </button>
         </div>
       </div>
     </div>
   );
 }
-
 
 // mint button の status
 // mint button の loading

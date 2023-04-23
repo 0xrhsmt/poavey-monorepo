@@ -16,3 +16,12 @@ pnpm exec dev
 open http://localhost:3000
 ```
 
+### Apps and Packages
+
+- `web`: [Next.js](https://nextjs.org/) web application.
+- `cotracts`: Poavey smart contracts using Semaphore for anonymous survey responses.
+- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+

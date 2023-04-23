@@ -20,7 +20,7 @@ export default function IndexPage() {
             href={"/events/new"}
             className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3 text-center border-2 text-primary border-primary shadow-sm text-2xl text-fuchsia-700 hover:text-accent hover:border-accent focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-accent transition py-2.5 px-6"
           >
-            <ChevronRightIcon className="w-5 h-5"/>Let's do Surveys
+            <ChevronRightIcon className="w-5 h-5"/>Let&apos;s do Surveys
           </Link>
         </div>
       </div>

@@ -16,6 +16,7 @@ contract Poavey {
         string[] surveyOptions;
         // TODO: should be stored offchain.
         uint256[] commitments;
+        uint256[] answers;
     }
 
     event EventRegistered(
@@ -83,6 +84,7 @@ contract Poavey {
         if (anEvent.id == 0) revert("Poavey: event does not exist");
         if (anEvent.nullifierHashes[nullifierHash])
             revert("Poavey: already answered");
+        anEvent.answers.push(answers);
 
         semaphore.verifyProof(
             anEvent.groupId,
@@ -128,5 +130,12 @@ contract Poavey {
         if (anEvent.id == 0) revert("Poavey: event does not exist");
         
         return anEvent.surveyOptions;
+    }
+
+    function getAnswers(uint256 id) external view returns (uint256[] memory) {
+        Event storage anEvent = events[id];
+        if (anEvent.id == 0) revert("Poavey: event does not exist");
+        
+        return anEvent.answers;
     }
 }

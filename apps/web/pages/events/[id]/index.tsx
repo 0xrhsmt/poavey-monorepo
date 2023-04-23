@@ -2,12 +2,13 @@ import { useRouter } from "next/router";
 import {
   usePoaveyEvents,
   usePoaveyGetCommitments,
-  usePreparePoaveyAnswerSurvey,
-  usePoaveyAnswerSurvey,
+  usePoaveyGetSurveyOptions,
+  usePoaveySurveyAnsweredEvent,
+  usePoaveyGetAnswers
 } from "../../../libs";
 import { BigNumber, ethers } from "ethers";
 import { useAccount, useSignMessage, useSigner } from "wagmi";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Group } from "@semaphore-protocol/group";
 import { Identity } from "@semaphore-protocol/identity";
 import { generateProof, FullProof } from "@semaphore-protocol/proof";
@@ -15,6 +16,7 @@ import Image from "next/image";
 import { CalendarDaysIcon } from "@heroicons/react/24/solid";
 import { Poavey__factory } from "contracts";
 import { useMounted } from "../../../libs";
+import { useForm } from "react-hook-form";
 
 const identityLocalStorageKey = (address: string, id: string) =>
   `identity-${address}-${id}`;
@@ -117,7 +119,7 @@ const useAnswerSurvey = (id?: string, identity?: Identity) => {
     watch: true,
   });
 
-  const answerSurvey = useCallback(async () => {
+  const answerSurvey = useCallback(async (question1, question2, question3) => {
     if (!event || !commitments || !identity) return;
 
     const groupId = event.groupId.toString();
@@ -125,7 +127,7 @@ const useAnswerSurvey = (id?: string, identity?: Identity) => {
     const group = new Group(groupId);
     group.addMembers(commitments.map((c) => c.toString()));
 
-    const signal = BigNumber.from(ethers.utils.formatBytes32String("1"));
+    const signal = BigNumber.from(ethers.utils.formatBytes32String(`${question1}${question2}${question3}`));
 
     const { merkleTreeRoot, nullifierHash, proof } = await generateProof(
       identity,
@@ -160,6 +162,43 @@ export default function IndexPage() {
   const { identity, requestIdentity } = useIdentity(id as string);
   const { attendEvent } = useAttendEvent(id as string, requestIdentity);
   const { answerSurvey } = useAnswerSurvey(id as string, identity);
+  const { data: surveyOptions } = usePoaveyGetSurveyOptions({
+    enabled: !!id,
+    args: [BigNumber.from(id ?? 0)],
+  });
+  const { data: answers } = usePoaveyGetAnswers({
+    enabled: !!id,
+    args: [BigNumber.from(id ?? 0)],
+    watch: true,
+  })
+  const {
+    formState: { isValidating, isValid, errors: formErrors },
+    register,
+    handleSubmit,
+    reset: resetForm,
+  } = useForm();
+
+  const avgAnswers = useMemo(() => {
+    if (!answers || answers.length === 0) return [0, 0, 0]
+
+    const map = answers.map((answer) => {
+
+      const value = ethers.utils.parseBytes32String(BigNumber.from(answer).toHexString())
+
+      return [
+        value[0],
+        value[1],
+        value[2],
+      ]
+    })
+    const result = [0, 0, 0]
+    result[0] = map.reduce((acc, curr) => acc + Number(curr[0]), 0) / map.length
+    result[1] = map.reduce((acc, curr) => acc + Number(curr[1]), 0) / map.length
+    result[2] = map.reduce((acc, curr) => acc + Number(curr[2]), 0) / map.length
+
+    return result
+  }, [answers])
+
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -211,14 +250,114 @@ export default function IndexPage() {
           <h3 className="text-xl mt-14 mb-4 font-semibold text-secondary">
             Feedback
           </h3>
-          <button
-            type="button"
-            disabled={!walletConnected}
-            onClick={answerSurvey}
-            className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
-          >
-            {walletConnected ? "Feedback Submit" : "Need to connect wallet"}
-          </button>
+          <form onSubmit={handleSubmit(async (data) => {
+            await answerSurvey(data.question1, data.question2, data.question3);
+            resetForm();
+          })}>
+            <div className="grid gap-y-4">
+              <div>
+                <label
+                  htmlFor="question1"
+                  className="cursor-pointer block text-sm mb-2"
+                >
+                  Question: {surveyOptions ? surveyOptions[0] : ""}
+                </label>
+                <div className="relative">
+                  <select
+                    id="question1"
+                    {...register("question1")}
+                    className="py-3 px-4 pr-9 block w-full border-gray-200 border-2 text-sm focus:border-primary focus:ring-primary"
+                  >
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                  </select>
+                  {formErrors?.question1?.type === "required" && (
+                    <span className="text-red-400">This field is required</span>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="question2"
+                  className="cursor-pointer block text-sm mb-2"
+                >
+                  Question: {surveyOptions ? surveyOptions[1] : ""}
+                </label>
+                <div className="relative">
+                  <select
+                    id="question2"
+                    {...register("question2")}
+                    className="py-3 px-4 pr-9 block w-full border-gray-200 border-2 text-sm focus:border-primary focus:ring-primary"
+                  >
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                  </select>
+
+                  {formErrors?.question2?.type === "required" && (
+                    <span className="text-red-400">This field is required</span>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="question3"
+                  className="cursor-pointer block text-sm mb-2"
+                >
+                  Question: {surveyOptions ? surveyOptions[2] : ""}
+                </label>
+                <div className="relative">
+                  <select
+                    id="question3"
+                    {...register("question3")}
+                    className="py-3 px-4 pr-9 block w-full border-gray-200 border-2 text-sm focus:border-primary focus:ring-primary"
+                  >
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                  </select>
+
+                  {formErrors?.question3?.type === "required" && (
+                    <span className="text-red-400">This field is required</span>
+                  )}
+                </div>
+              </div>
+              <div className="mb-2"></div>
+
+              <button
+                type="submit"
+                disabled={!walletConnected}
+                className="cursor-pointer w-full py-3 px-4 inline-flex justify-center items-center gap-2 border border-transparent font-semibold bg-primary text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-all text-sm"
+              >
+                {walletConnected ? "Feedback Submit" : "Need to connect wallet"}
+              </button>
+            </div>
+          </form>
+
+          <h3 className="text-xl mt-14 mb-4 font-semibold text-secondary">
+            Feedback Results
+          </h3>
+
+          <div>
+            <div>
+              Question: {surveyOptions ? surveyOptions[0] : ""} = {avgAnswers[0]}
+            </div>
+            <div>
+              Question: {surveyOptions ? surveyOptions[1] : ""} = {avgAnswers[1]}
+            </div>
+            <div>
+              Question: {surveyOptions ? surveyOptions[2] : ""} = {avgAnswers[2]}
+            </div>
+          </div>
         </div>
       </div>
     </div>

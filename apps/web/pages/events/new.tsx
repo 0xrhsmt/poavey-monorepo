@@ -130,7 +130,7 @@ export default function EventsNewPage() {
 
                 <div>
                   <label
-                    htmlFor="eventId"
+                    htmlFor="question1"
                     className="cursor-pointer block text-sm mb-2"
                   >
                     Question 1.
@@ -154,7 +154,7 @@ export default function EventsNewPage() {
 
                 <div>
                   <label
-                    htmlFor="eventId"
+                    htmlFor="question2"
                     className="cursor-pointer block text-sm mb-2"
                   >
                     Question 2.
@@ -178,7 +178,7 @@ export default function EventsNewPage() {
 
                 <div>
                   <label
-                    htmlFor="eventId"
+                    htmlFor="question3"
                     className="cursor-pointer block text-sm mb-2"
                   >
                     Question 3.

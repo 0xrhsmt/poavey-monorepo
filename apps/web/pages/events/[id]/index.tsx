@@ -15,7 +15,7 @@ import { Identity } from "@semaphore-protocol/identity";
 import { generateProof, FullProof } from "@semaphore-protocol/proof";
 import Image from "next/image";
 import { CalendarDaysIcon } from "@heroicons/react/24/solid";
-import { Poavey__factory } from "contracts";
+import { Poavey__factory } from "../../../libs/typechain-types";
 import { useMounted } from "../../../libs";
 import { useForm } from "react-hook-form";
 

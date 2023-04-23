@@ -1,1 +1,0 @@
-export * from '../typechain-types/factories/contracts/Poavey__factory';

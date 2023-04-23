@@ -63,7 +63,7 @@ export default function EventsNewPage() {
     } catch (error) {
       console.error(error);
     }
-  }, [eventId, groupId, registerEvent, resetForm]);
+  }, [eventId, groupId, registerEvent, resetForm, push]);
 
   const isSubmitEnabled = useMemo(
     () => !isLoadingPrepareRegister && !isLoadingRegister && !invalidEventId,
@@ -84,6 +84,7 @@ export default function EventsNewPage() {
                 className="text-primary decoration-2 hover:underline font-medium"
                 href="https://drops.poap.xyz/"
                 target="_blank"
+                rel="noreferrer"
               >
                 here
                 <ArrowTopRightOnSquareIcon className="inline w-4 h-4 mb-0.5 ml-0.5" />

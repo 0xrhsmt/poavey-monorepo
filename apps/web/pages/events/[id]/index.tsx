@@ -49,7 +49,7 @@ const useIdentity = (id?: string) => {
 
       return _identity;
     },
-    [id, address]
+    [id, address, setIdentity]
   );
 
   const requestIdentity = useCallback(async () => {
@@ -58,7 +58,7 @@ const useIdentity = (id?: string) => {
     });
 
     return saveIdentity(identityString);
-  }, [id, address, saveIdentity, signMessageAsync]);
+  }, [id, saveIdentity]);
 
   useEffect(() => {
     if (!id || !address) return;
@@ -100,7 +100,7 @@ const useAttendEvent = (
     } catch (error) {
       console.error(error);
     }
-  }, [id, signer, requestIdentity, signMessageAsync]);
+  }, [id, signer, requestIdentity]);
 
   return {
     attendEvent,
@@ -203,8 +203,6 @@ export default function IndexPage() {
 
     return result
   }, [answers])
-
-  console.log(isAttendee)
 
   return (
     <div className="flex flex-col justify-center items-center">

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ethersproject/providers": "5.7.2",
     "@heroicons/react": "^2.0.17",
     "@rainbow-me/rainbowkit": "^0.12.9",
     "@semaphore-protocol/group": "^3.7.0",
